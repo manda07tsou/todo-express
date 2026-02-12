@@ -1,14 +1,16 @@
 import type { Request, Response } from "express"
 import { prisma } from "../config/db.config";
+import { matchedData } from "express-validator";
+import { TodoCreateInput } from '../../generated/prisma/models/Todo';
 
 export const Index = async (req: Request, res:Response) => {
     const data = await prisma.todo.findMany()
-
+    
     res.json(data);
 }
 
 export const Detail = async (req: Request, res:Response) => {
-    const todoId:number = parseInt(req.params.id)
+    const todoId:number = matchedData(req).id
 
     const data = await prisma.todo.findUnique({
         where: {
@@ -20,7 +22,7 @@ export const Detail = async (req: Request, res:Response) => {
 }
 
 export const Create = async (req: Request, res: Response) => {
-    const data = await req.body
+    const data: TodoCreateInput = matchedData(req)
 
     let response = await prisma.todo.create({
         data: data
