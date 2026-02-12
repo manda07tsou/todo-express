@@ -58,3 +58,15 @@ export const Update = async (req: Request, res:Response) => {
 
     res.json(response)
 }
+
+export const Delete = async (req: Request, res: Response) => {
+    const id:number= matchedData(req).id;
+
+    let response = await prisma.todo.delete({
+        where: {
+            id: id
+        }
+    })
+
+    res.status(404).json([])
+}

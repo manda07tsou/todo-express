@@ -31,6 +31,12 @@ router.patch('/todo/:id',
     todoController.Update
 )
 
+router.delete('/todo/:id',
+    idParamsValidationSchema,
+    validatorMiddleware,
+    todoController.Delete
+)
+
 //users
 router.get('/user', userController.Liste)
 
