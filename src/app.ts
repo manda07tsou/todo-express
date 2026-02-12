@@ -1,6 +1,8 @@
+import dotenv from 'dotenv'
 import express from "express"
 import { router } from "./routes/routes.js";
-import { validatorMiddleware } from "./middlewares/validatorMiddleware.js";
+
+dotenv.config()
 
 const app = express()
 const port = 3001

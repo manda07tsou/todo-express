@@ -3,15 +3,17 @@ import { Todo } from "../../generated/prisma/client";
 import { todoFiltersType } from "../@types/todoTypes";
 import { PriorityLabel } from "../config/constantes/priorityConstant";
 import { prisma } from "../config/db.config";
+import { paginationType } from "../@types/paginationTypes";
 
 export class TodoServices{
-    static async getTodos(filters: todoFiltersType){
+    static async getTodos(filters: todoFiltersType, pagination: paginationType){
         let published = filters.published
         const filtersClause:any = {}
         if(published !== undefined && published != null) filtersClause.published = published
 
         let data = await prisma.todo.findMany({
-            where: filtersClause
+            where: filtersClause,
+            ...pagination
         })
 
         return this.formatTodo(data)

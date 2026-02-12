@@ -3,19 +3,35 @@ import { prisma } from "../config/db.config";
 import { matchedData } from "express-validator";
 import { TodoCreateInput, TodoUpdateInput } from '../../generated/prisma/models/Todo';
 import { TodoServices } from "../services/todoServices";
+import { paginationHelpers } from "../utils/pagination";
 
 
 export const Index = async (req: Request, res:Response) => {
-    const {published} = matchedData(req, {locations: ['query']});
-    let data = await TodoServices.getTodos({published})
+    const {published, page, itemPerPage} = matchedData(req, {locations: ['query']});
+    const filters = {published}
+    
+    let count = await prisma.todo.count({
+        where: filters
+    })
+    
+    const pagination = paginationHelpers(page, itemPerPage)
+    const totalPages = Math.ceil(count / itemPerPage)
 
-    res.json(data);
+
+    let data = await TodoServices.getTodos({published}, pagination)
+
+    res.json({
+        items: data,
+        page: page,
+        itemPerPage: itemPerPage,
+        totalPages: totalPages
+    });
 }
 
 //retrieve todo
 export const Detail = async (req: Request, res:Response) => {
     const todoId:number = matchedData(req).id
-
+    
     const data = await TodoServices.getTodoById(todoId)
 
     res.json(data);

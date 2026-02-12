@@ -1,5 +1,6 @@
 import { body, query } from "express-validator";
 import { PriorityValue } from "../constantes/priorityConstant";
+import { itemPerPageParamsValidationSchema, pageParamsValidationSchema } from "./utilsValidationSchema";
 
 
 export const todoCreateValidationSchema = [
@@ -36,5 +37,7 @@ export const todoUpdateValidationSchema = [
 ]
 
 export const todoFiltersValidationSchema = [
-    query('published').optional().isBoolean().toBoolean()
+    query('published').optional().isBoolean().toBoolean(),
+    pageParamsValidationSchema,
+    itemPerPageParamsValidationSchema
 ]
