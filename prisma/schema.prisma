@@ -25,7 +25,9 @@ model Todo {
   id        Int     @id @default(autoincrement())
   title     String
   content   String? @db.Text
+  createdAt DateTime @default(now())
   published Boolean @default(false)
+  priority  Int     @default(2)
   author    Author    @relation(fields: [authorId], references: [id])
   authorId  Int
 }

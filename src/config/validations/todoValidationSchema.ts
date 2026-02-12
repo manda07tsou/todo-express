@@ -1,4 +1,5 @@
-import { body } from "express-validator";
+import { body, query } from "express-validator";
+import { PriorityValue } from "../constantes/priorityConstant";
 
 
 export const todoCreateValidationSchema = [
@@ -11,7 +12,11 @@ export const todoCreateValidationSchema = [
         .isBoolean(),
     body('author')
         .isNumeric()
-        .toInt()
+        .toInt(),
+    body('priority')
+        .isNumeric()
+        .notEmpty()
+        .isIn(PriorityValue)
 ]
 
 export const todoUpdateValidationSchema = [
@@ -24,5 +29,12 @@ export const todoUpdateValidationSchema = [
         .isString().notEmpty(),
     body('published')
         .optional()
-        .isBoolean()
+        .isBoolean(),
+    body('priority')
+        .optional()
+        .isIn(PriorityValue)
+]
+
+export const todoFiltersValidationSchema = [
+    query('published').optional().isBoolean().toBoolean()
 ]
