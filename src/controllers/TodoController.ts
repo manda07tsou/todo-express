@@ -2,23 +2,12 @@ import type { Request, Response } from "express"
 import { prisma } from "../config/db.config";
 import { matchedData } from "express-validator";
 import { TodoCreateInput, TodoUpdateInput } from '../../generated/prisma/models/Todo';
-import { PriorityLabel } from "../config/constantes/priorityConstant";
+import { TodoServices } from "../services/todoServices";
 
 
 export const Index = async (req: Request, res:Response) => {
     const {published} = matchedData(req, {locations: ['query']});
-
-    const filtersClause:any = {}
-    if(filtersClause !== 'undefined' && filtersClause !== null) filtersClause.published = published
-
-    let data = await prisma.todo.findMany({
-        where: filtersClause
-    })
-
-    data = data.map(todo => ({
-        ...todo,
-        priorityLabel: PriorityLabel[todo.priority]
-    }))
+    let data = await TodoServices.getTodos({published})
 
     res.json(data);
 }
@@ -27,11 +16,7 @@ export const Index = async (req: Request, res:Response) => {
 export const Detail = async (req: Request, res:Response) => {
     const todoId:number = matchedData(req).id
 
-    const data = await prisma.todo.findUnique({
-        where: {
-            id: todoId
-        }
-    })
+    const data = await TodoServices.getTodoById(todoId)
 
     res.json(data);
 }
